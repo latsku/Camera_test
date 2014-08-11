@@ -126,14 +126,31 @@ int main() {
 	 */
 	OV2640_HW_Init();
 	Serial_print(USART2, "HW_Init done. \r\n");
+	/* Print camera Id */
+	OV2640_IDTypeDef camera_id;
+	OV2640_ReadID(&camera_id);
+	Serial_print(USART2, camera_id.Manufacturer_ID1, 16);
+	Serial_print(USART2, camera_id.Manufacturer_ID2, 16);
+	Serial_print(USART2, camera_id.PIDH, 16);
+	Serial_print(USART2, camera_id.PIDL, 16);
+	Serial_println(USART2, "");
+
+	OV2640_QQVGAConfig();
+	Serial_print(USART2, "QQVGAConfig done. \r\n");
+	// OV2640_BandWConfig(0x18); // BW
+
+
 	OV2640_Init(BMP_QQVGA);
 	Serial_print(USART2, "Init done. \r\n");
-	OV2640_QQVGAConfig();
-	OV2640_BandWConfig(0x18); // BW
-	Serial_print(USART2, "QQVGAConfig done. \r\n");
 
+	// Memset
+	int i;
+	for (i=0; i<160*120; i++) {
+		Targetbuffer[i] = 0xdeadbeef;
+	}
 
 	DMA_Cmd(DMA2_Stream1, ENABLE);
+	Serial_print(USART2, "DMA Enable done. \r\n");
 
 	DCMI_Cmd(ENABLE);
 	Serial_print(USART2, "DCMI Enable done. \r\n");
