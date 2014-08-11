@@ -25,7 +25,8 @@
 #endif
 
 
-
+void Serial_print_c(USART_TypeDef *USARTx, int value, int base);
+void Serial_println_c(USART_TypeDef *USARTx, char *s);
 void Delay(uint32_t nTime);
 void TimingDelay_Decrement(void);
 

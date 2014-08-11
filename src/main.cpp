@@ -14,11 +14,20 @@ static __IO uint32_t TimingDelay;
 
 void print_CameraData();
 void Serial_print(USART_TypeDef *USARTx, char *s);
+void Serial_print(USART_TypeDef *USARTx, int value, int base);
 void Serial_println(USART_TypeDef *USARTx, char *s);
 
 #ifdef __cplusplus
  extern "C" {
 #endif
+
+void Serial_print_c(USART_TypeDef *USARTx, int value, int base) {
+	Serial_print(USARTx, value, base);
+}
+
+void Serial_println_c(USART_TypeDef *USARTx, char *s) {
+	Serial_println(USARTx, s);
+}
 
 int main() {
 	SysTick_Config(SystemCoreClock / 1000);
@@ -146,10 +155,10 @@ int main() {
 void print_CameraData() {
 	int i;
 	for (i = 0; i < 10; i++) {
-		USART_SendData(USART2, Targetbuffer[i] >> 24);
-		USART_SendData(USART2, Targetbuffer[i] >> 16);
-		USART_SendData(USART2, Targetbuffer[i] >> 8);
-		USART_SendData(USART2, Targetbuffer[i]);
+		Serial_print(USART2, (Targetbuffer[i] >> 24) & 0xff, 16);
+		Serial_print(USART2, (Targetbuffer[i] >> 16) & 0xff, 16);
+		Serial_print(USART2, (Targetbuffer[i] >> 8)  & 0xff, 16);
+		Serial_print(USART2, (Targetbuffer[i])       & 0xff, 16);
 		Serial_print(USART2, "\r\n");
 	}
 }
