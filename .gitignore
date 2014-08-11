@@ -19,3 +19,12 @@
 *.exe
 *.out
 *.app
+
+
+*.d
+*.elf
+*.bin
+*.map
+
+
+Debug/src
