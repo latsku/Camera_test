@@ -1083,16 +1083,13 @@ void OV2640_HW_Init(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
   /* Configure I2C2 */
   /* I2C DeInit */ 
   I2C_DeInit(I2C2);
-    
-  /* Enable the I2C peripheral */
-  I2C_Cmd(I2C2, ENABLE);
- 
+
   /* Set the I2C structure parameters */
   I2C_InitStruct.I2C_Mode = I2C_Mode_I2C;
   I2C_InitStruct.I2C_DutyCycle = I2C_DutyCycle_2;
@@ -1100,9 +1097,12 @@ void OV2640_HW_Init(void)
   I2C_InitStruct.I2C_Ack = I2C_Ack_Enable;
   I2C_InitStruct.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
   I2C_InitStruct.I2C_ClockSpeed = 30000;
-  
+
   /* Initialize the I2C peripheral w/ selected parameters */
   I2C_Init(I2C2, &I2C_InitStruct);
+
+  /* Enable the I2C peripheral */
+  I2C_Cmd(I2C2, ENABLE);
 }
 
 /**
