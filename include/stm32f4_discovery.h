@@ -66,6 +66,7 @@ void BlinkGreen(int count) {
 	}
 
 }
+
 void BlinkOrange(int count) {
 
 	while (count > 0)
@@ -102,13 +103,5 @@ void BlinkRed(int count) {
 
 }
 
-void ms_delay(int ms)
-{
-   while (ms-- > 0) {
-      volatile int x=5971;
-      while (x-- > 0)
-         __asm("nop");
-   }
-}
 
 #endif /* STM32F4_DISCOVERY_H_ */
