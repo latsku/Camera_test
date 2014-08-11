@@ -19,7 +19,6 @@ void Serial_println(USART_TypeDef *USARTx, char *s);
 #ifdef __cplusplus
  extern "C" {
 #endif
-void Default_Handler2(void);
 
 int main() {
 	SysTick_Config(SystemCoreClock / 1000);
@@ -155,8 +154,7 @@ void Serial_print(USART_TypeDef *USARTx, char *s) {
 
 	while (*s) {
 		while( !(USARTx->SR & USART_SR_TC) );
-		USART_SendData(USARTx, *s);
-		*s++;
+		USART_SendData(USARTx, *s++);
 	}
 }
 
@@ -237,14 +235,6 @@ void assert_failed(uint8_t* file, uint32_t line) {
 }
 
 
-void Default_Handler2(void)
-{
-	GPIO_SetBits(GPIOD, BLUE_LED);
-	/* Go into an infinite loop. */
-	while (1)
-	{
-	}
-}
 
 void DCMI_IRQHandler(void) {
 	Serial_print(USART2, "DCMI IRQ \r\n");

@@ -29,7 +29,6 @@
 void Delay(uint32_t nTime);
 void TimingDelay_Decrement(void);
 
-static void Default_Handler(void);
 
 #ifdef __cplusplus
 }
