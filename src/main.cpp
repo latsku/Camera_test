@@ -121,6 +121,9 @@ int main() {
 	OV2640_BandWConfig(0x18); // BW
 	Serial_print(USART2, "QQVGAConfig done. \r\n");
 
+
+	DMA_Cmd(DMA2_Stream1, ENABLE);
+
 	DCMI_Cmd(ENABLE);
 	Serial_print(USART2, "DCMI Enable done. \r\n");
 	DCMI_CaptureCmd(ENABLE);
