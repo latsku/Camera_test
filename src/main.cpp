@@ -23,10 +23,6 @@ void Serial_println(USART_TypeDef *USARTx, char *s);
 int main() {
 	SysTick_Config(SystemCoreClock / 1000);
 
-	Serial_print(USART2, __DATE__);
-	Serial_print(USART2, " - ");
-	Serial_println(USART2, __TIME__);
-
 	InitLeds();
 	GPIO_SetBits(GPIOD,   GREEN_LED);
 	Delay(100);
@@ -80,7 +76,12 @@ int main() {
 	/* Enable USART */
 	USART_Cmd(USART2, ENABLE);
 
-	Serial_print(USART2, "Hello World!\r\n");
+	Serial_print(USART2, "Hello World!  --  Compiled on: ");
+	Serial_print(USART2, __DATE__);
+	Serial_print(USART2, " - ");
+	Serial_println(USART2, __TIME__);
+
+
 
 	/**
 	 * Interrupts
