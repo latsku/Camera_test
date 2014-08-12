@@ -17,8 +17,8 @@
   *
   *        http://www.st.com/software_license_agreement_liberty_v2
   *
-  * Unless required by applicable law or agreed to in writing, software 
-  * distributed under the License is distributed on an "AS IS" BASIS, 
+  * Unless required by applicable law or agreed to in writing, software
+  * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
   * limitations under the License.
@@ -38,7 +38,7 @@ extern "C" {
 
 /** @addtogroup DCMI_CameraExample
   * @{
-  */ 
+  */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -800,7 +800,7 @@ const unsigned char OV2640_JPEG_INIT[][2]=
   0x5c, 0x00,
 };
 
-const unsigned char OV2640_YUV422[][2]= 
+const unsigned char OV2640_YUV422[][2]=
 {
   0xFF, 0x00,
   0x05, 0x00,
@@ -1005,7 +1005,7 @@ const unsigned char OV2640_352x288_JPEG[][2]=
 /* Private functions ---------------------------------------------------------*/
 
 /**
-  * @brief  Initializes the hardware resources (I2C and GPIO) used to configure 
+  * @brief  Initializes the hardware resources (I2C and GPIO) used to configure
   *         the OV2640 camera.
   * @param  None
   * @retval None
@@ -1035,7 +1035,7 @@ void OV2640_HW_Init(void)
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource8, GPIO_AF_DCMI);
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource9, GPIO_AF_DCMI);
   GPIO_PinAFConfig(GPIOC, GPIO_PinSource11, GPIO_AF_DCMI);
-  
+
   /* Configure MCO1 pin(PA8) in alternate function */
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
@@ -1077,7 +1077,7 @@ void OV2640_HW_Init(void)
   /* Connect I2C2 pins to AF4 */
   GPIO_PinAFConfig(GPIOB, GPIO_PinSource10, GPIO_AF_I2C2);
   GPIO_PinAFConfig(GPIOB, GPIO_PinSource11, GPIO_AF_I2C2);
-  
+
   /* Configure I2C2 GPIOs */
   GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10 | GPIO_Pin_11;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
@@ -1087,7 +1087,7 @@ void OV2640_HW_Init(void)
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 
   /* Configure I2C2 */
-  /* I2C DeInit */ 
+  /* I2C DeInit */
   I2C_DeInit(I2C2);
 
   /* Set the I2C structure parameters */
@@ -1132,7 +1132,7 @@ void OV2640_ReadID(OV2640_IDTypeDef *OV2640ID)
 
 /**
   * @brief  Configures DCMI/DMA to capture image from the OV2640 camera.
-  * @param  ImageFormat: Image format BMP or JPEG 
+  * @param  ImageFormat: Image format BMP or JPEG
   * @param  BMPImageSize: BMP Image size
   * @retval None
   */
@@ -1145,7 +1145,7 @@ void OV2640_Init(ImageFormat_TypeDef ImageFormat)
   /* Enable DCMI clock */
   RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_DCMI, ENABLE);
 
-  /* DCMI configuration */ 
+  /* DCMI configuration */
   DCMI_InitStructure.DCMI_CaptureMode = DCMI_CaptureMode_Continuous;
   DCMI_InitStructure.DCMI_SynchroMode = DCMI_SynchroMode_Hardware;
   DCMI_InitStructure.DCMI_PCKPolarity = DCMI_PCKPolarity_Rising;
@@ -1157,11 +1157,11 @@ void OV2640_Init(ImageFormat_TypeDef ImageFormat)
   /* Configures the DMA2 to transfer Data from DCMI */
   /* Enable DMA2 clock */
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
-  
-  /* DMA2 Stream1 Configuration */  
+
+  /* DMA2 Stream1 Configuration */
   DMA_DeInit(DMA2_Stream1);
 
-  DMA_InitStructure.DMA_Channel = DMA_Channel_1;  
+  DMA_InitStructure.DMA_Channel = DMA_Channel_1;
   DMA_InitStructure.DMA_PeripheralBaseAddr = DCMI->DR;
   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)Targetbuffer;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
@@ -1182,7 +1182,7 @@ void OV2640_Init(ImageFormat_TypeDef ImageFormat)
 #if 0 // TODO
     case BMP_QQVGA:
     {
-      /* DCMI configuration */ 
+      /* DCMI configuration */
       DCMI_InitStructure.DCMI_VSPolarity = DCMI_VSPolarity_High;
       DCMI_Init(&DCMI_InitStructure);
 
@@ -1202,7 +1202,7 @@ void OV2640_Init(ImageFormat_TypeDef ImageFormat)
 #endif
      default:
     {
-      /* DCMI configuration */ 
+      /* DCMI configuration */
       DCMI_InitStructure.DCMI_VSPolarity = DCMI_VSPolarity_High;
       DCMI_Init(&DCMI_InitStructure);
 
@@ -1304,7 +1304,7 @@ void OV2640_JPEGConfig(ImageFormat_TypeDef ImageFormat)
       for(i=0; i<(sizeof(OV2640_176x144_JPEG)/2); i++)
       {
         OV2640_WriteReg(OV2640_176x144_JPEG[i][0], OV2640_176x144_JPEG[i][1]);
-      } 
+      }
       break;
     }
     case JPEG_320x240:
@@ -1337,7 +1337,7 @@ void OV2640_JPEGConfig(ImageFormat_TypeDef ImageFormat)
 
 /**
   * @brief  Configures the OV2640 camera brightness.
-  * @param  Brightness: Brightness value, where Brightness can be: 
+  * @param  Brightness: Brightness value, where Brightness can be:
   *         0x40 for Brightness +2,
   *         0x30 for Brightness +1,
   *         0x20 for Brightness 0,
@@ -1357,7 +1357,7 @@ void OV2640_BrightnessConfig(uint8_t Brightness)
 
 /**
   * @brief  Configures the OV2640 camera Black and white mode.
-  * @param  BlackWhite: BlackWhite value, where BlackWhite can be: 
+  * @param  BlackWhite: BlackWhite value, where BlackWhite can be:
   *         0x18 for B&W,
   *         0x40 for Negative,
   *         0x58 for B&W negative,
@@ -1378,7 +1378,7 @@ void OV2640_BandWConfig(uint8_t BlackWhite)
   * @brief  Configures the OV2640 camera color effects.
   * @param  value1: Color effects value1
   * @param  value2: Color effects value2
-  *         where value1 and value2 can be: 
+  *         where value1 and value2 can be:
   *         value1 = 0x40, value2 = 0xa6 for Antique,
   *         value1 = 0xa0, value2 = 0x40 for Bluish,
   *         value1 = 0x40, value2 = 0x40 for Greenish,
@@ -1399,7 +1399,7 @@ void OV2640_ColorEffectsConfig(uint8_t value1, uint8_t value2)
   * @brief  Configures the OV2640 camera contrast.
   * @param  value1: Contrast value1
   * @param  value2: Contrast value2
-  *         where value1 and value2 can be: 
+  *         where value1 and value2 can be:
   *         value1 = 0x28, value2 = 0x0c for Contrast +2,
   *         value1 = 0x24, value2 = 0x16 for Contrast +1,
   *         value1 = 0x20, value2 = 0x20 for Contrast 0,
@@ -1422,14 +1422,14 @@ void OV2640_ContrastConfig(uint8_t value1, uint8_t value2)
 /**
   * @brief  Writes a byte at a specific Camera register
   * @param  Addr: OV2640 register address.
-  * @param  Data: Data to be written to the specific register 
+  * @param  Data: Data to be written to the specific register
   * @retval 0x00 if write operation is OK.
   *       0xFF if timeout condition occured (device not connected or bus error).
   */
 uint8_t OV2640_WriteReg(uint16_t Addr, uint8_t Data)
 {
   uint32_t timeout = DCMI_TIMEOUT_MAX;
-  
+
   /* Generate the Start Condition */
   I2C_GenerateSTART(I2C2, ENABLE);
 
@@ -1440,10 +1440,10 @@ uint8_t OV2640_WriteReg(uint16_t Addr, uint8_t Data)
     /* If the timeout delay is exeeded, exit with error code */
     if ((timeout--) == 0) return 0xFF;
   }
-   
+
   /* Send DCMI selcted device slave Address for write */
   I2C_Send7bitAddress(I2C2, OV2640_DEVICE_WRITE_ADDRESS, I2C_Direction_Transmitter);
- 
+
   /* Test on I2C2 EV6 and clear it */
   timeout = DCMI_TIMEOUT_MAX; /* Initialize timeout value */
   while(!I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
@@ -1451,7 +1451,7 @@ uint8_t OV2640_WriteReg(uint16_t Addr, uint8_t Data)
     /* If the timeout delay is exeeded, exit with error code */
     if ((timeout--) == 0) return 0xFF;
   }
- 
+
   /* Send I2C2 location address LSB */
   I2C_SendData(I2C2, (uint8_t)(Addr));
 
@@ -1462,7 +1462,7 @@ uint8_t OV2640_WriteReg(uint16_t Addr, uint8_t Data)
     /* If the timeout delay is exeeded, exit with error code */
     if ((timeout--) == 0) return 0xFF;
   }
-  
+
   /* Send Data */
   I2C_SendData(I2C2, Data);
 
@@ -1472,11 +1472,11 @@ uint8_t OV2640_WriteReg(uint16_t Addr, uint8_t Data)
   {
     /* If the timeout delay is exeeded, exit with error code */
     if ((timeout--) == 0) return 0xFF;
-  }  
- 
+  }
+
   /* Send I2C2 STOP Condition */
   I2C_GenerateSTOP(I2C2, ENABLE);
-  
+
   /* If operation is OK, return 0 */
   return 0;
 }
@@ -1485,7 +1485,7 @@ uint8_t OV2640_WriteReg(uint16_t Addr, uint8_t Data)
   * @brief  Reads a byte from a specific Camera register
   * @param  Addr: OV2640 register address.
   * @retval data read from the specific register or 0xFF if timeout condition
-  *         occured. 
+  *         occured.
   */
 uint8_t OV2640_ReadReg(uint16_t Addr)
 {
@@ -1501,18 +1501,18 @@ uint8_t OV2640_ReadReg(uint16_t Addr)
   {
     /* If the timeout delay is exeeded, exit with error code */
     if ((timeout--) == 0) return 0xFF;
-  } 
-  
+  }
+
   /* Send DCMI selcted device slave Address for write */
   I2C_Send7bitAddress(I2C2, OV2640_DEVICE_READ_ADDRESS, I2C_Direction_Transmitter);
- 
+
   /* Test on I2C2 EV6 and clear it */
   timeout = DCMI_TIMEOUT_MAX; /* Initialize timeout value */
   while(!I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
   {
     /* If the timeout delay is exeeded, exit with error code */
     if ((timeout--) == 0) return 0xFF;
-  } 
+  }
 
   /* Send I2C2 location address LSB */
   I2C_SendData(I2C2, (uint8_t)(Addr));
@@ -1523,33 +1523,33 @@ uint8_t OV2640_ReadReg(uint16_t Addr)
   {
     /* If the timeout delay is exeeded, exit with error code */
     if ((timeout--) == 0) return 0xFF;
-  } 
-  
+  }
+
   /* Clear AF flag if arised */
   I2C2->SR1 |= (uint16_t)0x0400;
 
   /* Generate the Start Condition */
   I2C_GenerateSTART(I2C2, ENABLE);
-  
+
   /* Test on I2C2 EV6 and clear it */
   timeout = DCMI_TIMEOUT_MAX; /* Initialize timeout value */
   while(!I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_MODE_SELECT))
   {
     /* If the timeout delay is exeeded, exit with error code */
     if ((timeout--) == 0) return 0xFF;
-  } 
-  
+  }
+
   /* Send DCMI selcted device slave Address for write */
   I2C_Send7bitAddress(I2C2, OV2640_DEVICE_READ_ADDRESS, I2C_Direction_Receiver);
-   
+
   /* Test on I2C2 EV6 and clear it */
   timeout = DCMI_TIMEOUT_MAX; /* Initialize timeout value */
   while(!I2C_CheckEvent(I2C2, I2C_EVENT_MASTER_RECEIVER_MODE_SELECTED))
   {
     /* If the timeout delay is exeeded, exit with error code */
     if ((timeout--) == 0) return 0xFF;
-  }  
- 
+  }
+
   /* Prepare an NACK for the next data received */
   I2C_AcknowledgeConfig(I2C2, DISABLE);
 
@@ -1559,8 +1559,8 @@ uint8_t OV2640_ReadReg(uint16_t Addr)
   {
     /* If the timeout delay is exeeded, exit with error code */
     if ((timeout--) == 0) return 0xFF;
-  }   
-    
+  }
+
   /* Prepare Stop after receiving data */
   I2C_GenerateSTOP(I2C2, ENABLE);
 
@@ -1573,11 +1573,11 @@ uint8_t OV2640_ReadReg(uint16_t Addr)
 
 /**
   * @}
-  */ 
+  */
 
 /**
   * @}
-  */ 
+  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 #ifdef __cplusplus
