@@ -165,9 +165,13 @@ int main() {
 
 	Delay(1000);
 	Serial_print(USART2, "Print: \r\n.\r\n.\r\n");
-	print_CameraData();
+	//print_CameraData();
 	Serial_print(USART2, "done. \r\n");
 
+	while (1) {
+		Serial_print(USART2, DCMI->DR, 16);
+		Serial_print(USART2, "\r\n");
+	}
 }
 
 #ifdef __cplusplus

@@ -1146,7 +1146,7 @@ void OV2640_Init(ImageFormat_TypeDef ImageFormat)
   RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_DCMI, ENABLE);
 
   /* DCMI configuration */ 
-  DCMI_InitStructure.DCMI_CaptureMode = DCMI_CaptureMode_SnapShot;
+  DCMI_InitStructure.DCMI_CaptureMode = DCMI_CaptureMode_Continuous;
   DCMI_InitStructure.DCMI_SynchroMode = DCMI_SynchroMode_Hardware;
   DCMI_InitStructure.DCMI_PCKPolarity = DCMI_PCKPolarity_Rising;
   DCMI_InitStructure.DCMI_VSPolarity = DCMI_VSPolarity_Low;
