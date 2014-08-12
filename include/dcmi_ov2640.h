@@ -38,7 +38,7 @@
 #include "stm32f4xx_i2c.h"
 #include "stm32f4xx_dcmi.h"
 
-extern unsigned int Targetbuffer[160*120];
+extern uint16_t Targetbuffer[160*120];
 /* Exported types ------------------------------------------------------------*/
 typedef struct
 {

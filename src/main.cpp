@@ -9,7 +9,10 @@
 #include "stm32f4xx.h"
 #include "stm32f4_discovery.h"
 
-unsigned int Targetbuffer[160*120];
+#define VERTICAL_RESOLUTION 120
+#define HORIZONTAL_RESOLUTION 160
+
+uint16_t Targetbuffer[160*120];
 static __IO uint32_t TimingDelay;
 
 void print_CameraData();
@@ -149,7 +152,7 @@ int main() {
 	// Memset
 	int i;
 	for (i=0; i<160*120; i++) {
-		Targetbuffer[i] = 0xdeadbeef;
+		Targetbuffer[i] = 0xdead;
 	}
 
 	DMA_Cmd(DMA2_Stream1, ENABLE);
