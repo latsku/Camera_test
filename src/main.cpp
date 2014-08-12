@@ -80,7 +80,6 @@ int main() {
 	USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
 	USART_Init(USART2, &USART_InitStructure);
 
-	USART2->CR3 |= USART_CR3_DMAT;
 
 	/* Enable USART */
 	USART_Cmd(USART2, ENABLE);
