@@ -176,13 +176,15 @@ int main() {
 
 
 void print_CameraData() {
-	int i;
-	for (i = 0; i < 10; i++) {
-		Serial_print(USART2, (Targetbuffer[i] >> 24) & 0xff, 16);
-		Serial_print(USART2, (Targetbuffer[i] >> 16) & 0xff, 16);
-		Serial_print(USART2, (Targetbuffer[i] >> 8)  & 0xff, 16);
-		Serial_print(USART2, (Targetbuffer[i])       & 0xff, 16);
+	int line, column;
+	for (line = 0; line < VERTICAL_RESOLUTION; ) {
+		for (column = 0; column < HORIZONTAL_RESOLUTION;) {
+//			Serial_print(USART2, (Targetbuffer[line*HORIZONTAL_RESOLUTION+column] >> 8)  & 0xff, 16);
+			Serial_print(USART2, (Targetbuffer[line*HORIZONTAL_RESOLUTION+column])       & 0xff, 16);
+			column = column + 4;
+		}
 		Serial_print(USART2, "\r\n");
+		line = line + 2;
 	}
 }
 
