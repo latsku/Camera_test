@@ -129,9 +129,13 @@ int main() {
 	/* Print camera Id */
 	OV2640_IDTypeDef camera_id;
 	OV2640_ReadID(&camera_id);
+	Serial_print(USART2, "Camera ID: ");
 	Serial_print(USART2, camera_id.Manufacturer_ID1, 16);
+	Serial_print(USART2, " - ");
 	Serial_print(USART2, camera_id.Manufacturer_ID2, 16);
+	Serial_print(USART2, " - ");
 	Serial_print(USART2, camera_id.PIDH, 16);
+	Serial_print(USART2, " - ");
 	Serial_print(USART2, camera_id.PIDL, 16);
 	Serial_println(USART2, "");
 
@@ -259,7 +263,7 @@ void assert_failed(uint8_t* file, uint32_t line) {
 	Serial_print(USART2, (char*)file);
 	Serial_print(USART2, ":");
 	Serial_print(USART2, (int)line, 10);
-	Serial_println(USART2, "Assert failed");
+	Serial_println(USART2, " Assert failed");
 	while (1) {
 		BlinkBlue(1);
 	}
@@ -268,7 +272,6 @@ void assert_failed(uint8_t* file, uint32_t line) {
 
 
 void DCMI_IRQHandler(void) {
-	Serial_print(USART2, "DCMI IRQ \r\n");
 	GPIO_ToggleBits(GPIOD, GREEN_LED);
 	while (1)
 	{
@@ -276,7 +279,6 @@ void DCMI_IRQHandler(void) {
 }
 
 void DMA2_Stream1_IRQHandler(void) {
-	Serial_print(USART2, "DMA IRQ \r\n");
 	GPIO_ToggleBits(GPIOD, ORANGE_LED);
 	while (1)
 	{
