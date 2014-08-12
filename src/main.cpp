@@ -104,13 +104,14 @@ int main() {
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_Init(&NVIC_InitStructure);
-	DCMI->IER |= DCMI_IER_FRAME_IE;
+	DCMI_ITConfig(DCMI_IT_FRAME, ENABLE);
 
 	NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream1_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_Init(&NVIC_InitStructure);
+	DMA_ITConfig(DMA2_Stream1, DMA_IT_TC, ENABLE);
 	Serial_print(USART2, "Interrupts done. \r\n");
 
 	/** Camera Reset Pin */
