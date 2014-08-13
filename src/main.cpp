@@ -243,7 +243,7 @@ int main() {
 	DMA_ITConfig(DMA2_Stream1, DMA_IT_TC | DMA_IT_FE | DMA_IT_TE | DMA_IT_DME, ENABLE);
 	Serial_print(USART2, "Interrupts done. \r\n");
 
-	/** Camera Reset Pin */
+	/** Camera Reset Pin & Power Down Pin */
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Low_Speed;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -282,7 +282,7 @@ int main() {
 	// Memset
 	int i;
 	for (i=0; i<160*120; i++) {
-		Targetbuffer[i] = 0xdead;
+		Targetbuffer[i] = 0xbeef;
 	}
 
 	DMA_Cmd(DMA2_Stream1, ENABLE);
@@ -295,7 +295,7 @@ int main() {
 	DCMI_CaptureCmd(ENABLE);
 	Serial_print(USART2, "DCMI Capture start. \r\n");
 
-	Delay(1000);
+
 	Serial_print(USART2, "Print: \r\n.\r\n.\r\n");
 	Serial_print(USART2, "done. \r\n");
 
