@@ -24,6 +24,13 @@ void Serial_print(USART_TypeDef *USARTx, char *s) {
 	}
 }
 
+void Serial_print(USART_TypeDef *USARTx, uint16_t s) {
+
+		while( !(USARTx->SR & USART_SR_TC) );
+		USART_SendData(USARTx, s);
+
+}
+
 void Serial_print(USART_TypeDef *USARTx, int value, int base)
 {
     char buffer[8 * sizeof(value) + 1];
