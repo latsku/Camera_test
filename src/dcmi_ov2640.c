@@ -1156,6 +1156,8 @@ void OV2640_Init(ImageFormat_TypeDef ImageFormat)
 
   /* Configures the DMA2 to transfer Data from DCMI */
   /* Enable DMA2 clock */
+  RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_DMA2, ENABLE);
+  RCC_AHB1PeriphResetCmd(RCC_AHB1Periph_DMA2, DISABLE);
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE);
 
   /* DMA2 Stream1 Configuration */
