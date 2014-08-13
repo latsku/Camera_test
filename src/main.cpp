@@ -286,6 +286,8 @@ int main() {
 	}
 
 	DMA_Cmd(DMA2_Stream1, ENABLE);
+	while ( DMA_GetCmdStatus(DMA2_Stream1) != ENABLE )
+		;
 	Serial_print(USART2, "DMA Enable done. \r\n");
 
 	DCMI_Cmd(ENABLE);
