@@ -15,10 +15,89 @@
 uint16_t Targetbuffer[160*120];
 static __IO uint32_t TimingDelay;
 
-void print_CameraData();
-void Serial_print(USART_TypeDef *USARTx, char *s);
-void Serial_print(USART_TypeDef *USARTx, int value, int base);
-void Serial_println(USART_TypeDef *USARTx, char *s);
+
+void Serial_print(USART_TypeDef *USARTx, char *s) {
+
+	while (*s) {
+		while( !(USARTx->SR & USART_SR_TC) );
+		USART_SendData(USARTx, *s++);
+	}
+}
+
+void Serial_print(USART_TypeDef *USARTx, int value, int base)
+{
+    char buffer[8 * sizeof(value) + 1];
+    // Null byte to the end.
+    char *str = &buffer[sizeof(buffer) - 1];
+    *str = '\0';
+
+    // If negative, print minus and make it positive.
+    if ( value < 0 ) {
+        Serial_print(USARTx, "-");
+        value = -value;
+    }
+
+    // Loop the number from least significant to most significant.
+    do {
+        int m = value;
+        value /= base;
+        char c = m - base * value;
+
+        if ( c < 10 ) {
+            // Numbers are continously in ASCII from 0 to 9 at 48 to 57
+            *--str = c + '0';
+        } else {
+            // Capital letters are also continously in ASCII starting with A in 65
+            *--str = c + 'A' - 10;
+        }
+    } while(value);
+
+    Serial_print(USARTx, str);
+}
+
+void Serial_println(USART_TypeDef *USARTx, char *s) {
+	Serial_print(USARTx, s);
+	Serial_print(USARTx, "\r\n");
+}
+
+void print_CameraData() {
+	int line, column;
+	for (line = 0; line < VERTICAL_RESOLUTION; ) {
+		for (column = 0; column < HORIZONTAL_RESOLUTION;) {
+//			Serial_print(USART2, (Targetbuffer[line*HORIZONTAL_RESOLUTION+column] >> 8)  & 0xff, 16);
+			Serial_print(USART2, (Targetbuffer[line*HORIZONTAL_RESOLUTION+column])       & 0xff, 16);
+			column = column + 4;
+		}
+		Serial_print(USART2, "\r\n");
+		line = line + 2;
+	}
+}
+
+/**
+  * @brief  Inserts a delay time.
+  * @param  nTime: specifies the delay time length, in milliseconds
+  * @retval None
+  */
+void Delay(uint32_t nTime)
+{
+  TimingDelay = nTime;
+
+  while(TimingDelay != 0);
+
+}
+
+/**
+  * @brief  Decrements the TimingDelay variable.
+  * @param  None
+  * @retval None
+  */
+void TimingDelay_Decrement(void)
+{
+  if (TimingDelay != 0x00)
+  {
+    TimingDelay--;
+  }
+}
 
 #ifdef __cplusplus
  extern "C" {
@@ -31,6 +110,27 @@ void Serial_print_c(USART_TypeDef *USARTx, int value, int base) {
 void Serial_println_c(USART_TypeDef *USARTx, char *s) {
 	Serial_println(USARTx, s);
 }
+
+void assert_failed(uint8_t* file, uint32_t line) {
+	Serial_print(USART2, (char*)file);
+	Serial_print(USART2, ":");
+	Serial_print(USART2, (int)line, 10);
+	Serial_println(USART2, " Assert failed");
+	while (1) {
+		BlinkBlue(1);
+	}
+}
+
+
+void ms_delay(int ms)
+{
+   while (ms-- > 0) {
+      volatile int x=5971;
+      while (x-- > 0)
+         __asm("nop");
+   }
+}
+
 
 int main() {
 	SysTick_Config(SystemCoreClock / 1000);
@@ -176,110 +276,6 @@ int main() {
 		Serial_print(USART2, "\r\n");
 	}
 }
-
-#ifdef __cplusplus
-}
-#endif
-
-
-void print_CameraData() {
-	int line, column;
-	for (line = 0; line < VERTICAL_RESOLUTION; ) {
-		for (column = 0; column < HORIZONTAL_RESOLUTION;) {
-//			Serial_print(USART2, (Targetbuffer[line*HORIZONTAL_RESOLUTION+column] >> 8)  & 0xff, 16);
-			Serial_print(USART2, (Targetbuffer[line*HORIZONTAL_RESOLUTION+column])       & 0xff, 16);
-			column = column + 4;
-		}
-		Serial_print(USART2, "\r\n");
-		line = line + 2;
-	}
-}
-
-
-void Serial_print(USART_TypeDef *USARTx, char *s) {
-
-	while (*s) {
-		while( !(USARTx->SR & USART_SR_TC) );
-		USART_SendData(USARTx, *s++);
-	}
-}
-
-void Serial_print(USART_TypeDef *USARTx, int value, int base)
-{
-    char buffer[8 * sizeof(value) + 1];
-    // Null byte to the end.
-    char *str = &buffer[sizeof(buffer) - 1];
-    *str = '\0';
-
-    // If negative, print minus and make it positive.
-    if ( value < 0 ) {
-        Serial_print(USARTx, "-");
-        value = -value;
-    }
-
-    // Loop the number from least significant to most significant.
-    do {
-        int m = value;
-        value /= base;
-        char c = m - base * value;
-
-        if ( c < 10 ) {
-            // Numbers are continously in ASCII from 0 to 9 at 48 to 57
-            *--str = c + '0';
-        } else {
-            // Capital letters are also continously in ASCII starting with A in 65
-            *--str = c + 'A' - 10;
-        }
-    } while(value);
-
-    Serial_print(USARTx, str);
-}
-
-void Serial_println(USART_TypeDef *USARTx, char *s) {
-	Serial_print(USARTx, s);
-	Serial_print(USARTx, "\r\n");
-}
-
-/**
-  * @brief  Inserts a delay time.
-  * @param  nTime: specifies the delay time length, in milliseconds
-  * @retval None
-  */
-void Delay(uint32_t nTime)
-{
-  TimingDelay = nTime;
-
-  while(TimingDelay != 0);
-
-}
-
-/**
-  * @brief  Decrements the TimingDelay variable.
-  * @param  None
-  * @retval None
-  */
-void TimingDelay_Decrement(void)
-{
-  if (TimingDelay != 0x00)
-  {
-    TimingDelay--;
-  }
-}
-
-#ifdef __cplusplus
- extern "C" {
-#endif
-
-void assert_failed(uint8_t* file, uint32_t line) {
-	Serial_print(USART2, (char*)file);
-	Serial_print(USART2, ":");
-	Serial_print(USART2, (int)line, 10);
-	Serial_println(USART2, " Assert failed");
-	while (1) {
-		BlinkBlue(1);
-	}
-}
-
 
 
 void DCMI_IRQHandler(void) {
