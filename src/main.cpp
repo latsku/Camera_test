@@ -60,16 +60,43 @@ void Serial_println(USART_TypeDef *USARTx, char *s) {
 	Serial_print(USARTx, "\r\n");
 }
 
-void print_CameraData() {
+
+void print_CameraDataHex() {
 	int line, column;
 	for (line = 0; line < VERTICAL_RESOLUTION; ) {
 		for (column = 0; column < HORIZONTAL_RESOLUTION;) {
 //			Serial_print(USART2, (Targetbuffer[line*HORIZONTAL_RESOLUTION+column] >> 8)  & 0xff, 16);
-			Serial_print(USART2, (Targetbuffer[line*HORIZONTAL_RESOLUTION+column])       & 0xff, 16);
-			column = column + 4;
+			Serial_print(USART2, (Targetbuffer[line*HORIZONTAL_RESOLUTION+column])       , 16);
+			column = column + 8;
+			Serial_print(USART2, " ");
 		}
 		Serial_print(USART2, "\r\n");
-		line = line + 2;
+		line = line + 4;
+	}
+}
+
+void print_CameraData() {
+	int line, column;
+	for (line = 0; line < VERTICAL_RESOLUTION; ) {
+		for (column = 0; column < HORIZONTAL_RESOLUTION;) {
+
+			if ( Targetbuffer[line*HORIZONTAL_RESOLUTION+column] > 0x00 && Targetbuffer[line*HORIZONTAL_RESOLUTION+column] < 0x4000 ) {
+				Serial_print(USART2, " ");
+			}
+			if ( Targetbuffer[line*HORIZONTAL_RESOLUTION+column] >= 0x4000 && Targetbuffer[line*HORIZONTAL_RESOLUTION+column] < 0x8000 ) {
+				Serial_print(USART2, ".");
+			}
+			if ( Targetbuffer[line*HORIZONTAL_RESOLUTION+column] >= 0x8000 && Targetbuffer[line*HORIZONTAL_RESOLUTION+column] < 0xb000 ) {
+				Serial_print(USART2, "o");
+			}
+			if ( Targetbuffer[line*HORIZONTAL_RESOLUTION+column] >= 0xb000 && Targetbuffer[line*HORIZONTAL_RESOLUTION+column] < 0xffff ) {
+				Serial_print(USART2, "#");
+			}
+
+			column = column + 2;
+		}
+		Serial_print(USART2, "\r\n");
+		line = line + 4;
 	}
 }
 
@@ -268,12 +295,18 @@ int main() {
 
 	Delay(1000);
 	Serial_print(USART2, "Print: \r\n.\r\n.\r\n");
-	//print_CameraData();
 	Serial_print(USART2, "done. \r\n");
 
 	while (1) {
-		Serial_print(USART2, DCMI->DR, 16);
-		Serial_print(USART2, "\r\n");
+		while (DCMI_GetFlagStatus(DCMI_FLAG_FRAMERI) == RESET)
+			;
+
+		print_CameraData();
+		Serial_print(USART2, 0x1b);
+		Serial_print(USART2, "[2J");
+		Serial_print(USART2, 0x1b);
+		Serial_print(USART2, "[H");
+
 	}
 }
 
