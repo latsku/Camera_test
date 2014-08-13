@@ -1208,6 +1208,10 @@ void OV2640_Init(ImageFormat_TypeDef ImageFormat)
       DCMI_InitStructure.DCMI_VSPolarity = DCMI_VSPolarity_High;
       DCMI_Init(&DCMI_InitStructure);
 
+      DMA_Cmd(DMA2_Stream1, DISABLE);
+      while ( DMA_GetCmdStatus(DMA2_Stream1) != DISABLE )
+        ;
+
       /* DMA2 IRQ channel Configuration */
       DMA_Init(DMA2_Stream1, &DMA_InitStructure);
       break;
