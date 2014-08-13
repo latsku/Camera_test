@@ -1164,7 +1164,7 @@ void OV2640_Init(ImageFormat_TypeDef ImageFormat)
   DMA_DeInit(DMA2_Stream1);
 
   DMA_InitStructure.DMA_Channel = DMA_Channel_1;
-  DMA_InitStructure.DMA_PeripheralBaseAddr = DCMI->DR;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&(DCMI->DR);
   DMA_InitStructure.DMA_Memory0BaseAddr = (uint32_t)Targetbuffer;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralToMemory;
   DMA_InitStructure.DMA_BufferSize = 160*120/2;
