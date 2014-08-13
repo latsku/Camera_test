@@ -306,13 +306,17 @@ int main() {
 	Serial_print(USART2, "Print: \r\n.\r\n.\r\n");
 	Serial_print(USART2, "done. \r\n");
 
+	Delay(1);
+	// Clear screen
+	Serial_print(USART2, 0x1b);
+	Serial_print(USART2, "[2J");
+
 	while (1) {
 		while (DCMI_GetFlagStatus(DCMI_FLAG_FRAMERI) == RESET)
 			;
 
 		print_CameraData();
-		Serial_print(USART2, 0x1b);
-		Serial_print(USART2, "[2J");
+		// Move cursor to home position.
 		Serial_print(USART2, 0x1b);
 		Serial_print(USART2, "[H");
 
