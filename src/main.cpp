@@ -104,14 +104,16 @@ int main() {
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_Init(&NVIC_InitStructure);
-	DCMI_ITConfig(DCMI_IT_FRAME, ENABLE);
+	DCMI_ClearITPendingBit(DCMI_IT_FRAME | DCMI_IT_OVF | DCMI_IT_ERR);
+	DCMI_ITConfig(DCMI_IT_FRAME | DCMI_IT_OVF | DCMI_IT_ERR, ENABLE);
 
 	NVIC_InitStructure.NVIC_IRQChannel = DMA2_Stream1_IRQn;
 	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
 	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
 	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
 	NVIC_Init(&NVIC_InitStructure);
-	DMA_ITConfig(DMA2_Stream1, DMA_IT_TC, ENABLE);
+	DMA_ClearITPendingBit(DMA2_Stream1, DMA_IT_TCIF1 | DMA_IT_TEIF1);
+	DMA_ITConfig(DMA2_Stream1, DMA_IT_TC | DMA_IT_FE | DMA_IT_TE | DMA_IT_DME, ENABLE);
 	Serial_print(USART2, "Interrupts done. \r\n");
 
 	/** Camera Reset Pin */
@@ -281,18 +283,80 @@ void assert_failed(uint8_t* file, uint32_t line) {
 
 
 void DCMI_IRQHandler(void) {
-	GPIO_ToggleBits(GPIOD, GREEN_LED);
-	while (1)
-	{
+	GPIO_SetBits(GPIOD, GREEN_LED);
+//	Serial_print(USART2, DCMI->RISR, 16);
+
+	/* DCMI overrun */
+	if ( DCMI_GetITStatus(DCMI_IT_OVF) != RESET) { // Overflow interrupt mask
+		while (1){
+			GPIO_SetBits(GPIOD, GREEN_LED);
+			ms_delay(500);
+		}
+		DCMI_ClearITPendingBit(DCMI_IT_OVF);
 	}
+
+	if ( DCMI_GetITStatus(DCMI_IT_FRAME) != RESET) { // Frame capture complete interrupt mask
+		DCMI_ClearITPendingBit(DCMI_IT_FRAME);
+	}
+
+	if ( DCMI_GetITStatus(DCMI_IT_ERR) != RESET) { // Synchronization error interrupt mask
+		while (1)
+			;
+		DCMI_ClearITPendingBit(DCMI_IT_ERR);
+	}
+
+	if ( DCMI_GetITStatus(DCMI_IT_LINE) != RESET) { // Line interrupt mask
+		DCMI_ClearITPendingBit(DCMI_IT_LINE);
+	}
+
+	if ( DCMI_GetITStatus(DCMI_IT_VSYNC) != RESET) { // Line interrupt mask
+		DCMI_ClearITPendingBit(DCMI_IT_VSYNC);
+	}
+
 }
 
 void DMA2_Stream1_IRQHandler(void) {
-	GPIO_ToggleBits(GPIOD, ORANGE_LED);
-	while (1)
-	{
+	GPIO_SetBits(GPIOD, ORANGE_LED);
+
+	if ( DMA_GetITStatus(DMA2_Stream1, DMA_IT_DMEIF1) != RESET) { // direct mode error interrupt
+		Serial_print(USART2, "direct mode error interrupt\r\n");
+		while (1) {
+			GPIO_ToggleBits(GPIOD, ORANGE_LED);
+			ms_delay(200);
+		}
+		// DMA_ClearITPendingBit(DMA2_Stream1, DMA_IT_DMEIF1);
 	}
+
+	if ( DMA_GetITStatus(DMA2_Stream1, DMA_IT_FEIF1) != RESET) { // FIFO error interrupt
+		Serial_print(USART2, "FIFO error interrupt\r\n");
+		while (1) {
+			GPIO_ToggleBits(GPIOD, ORANGE_LED);
+			ms_delay(800);
+		}
+		// DMA_ClearITPendingBit(DMA2_Stream1, DMA_IT_FEIF1);
+	}
+
+	if ( DMA_GetITStatus(DMA2_Stream1, DMA_IT_HTIF1) != RESET) { // half transfer complete interrupt
+
+		DMA_ClearITPendingBit(DMA2_Stream1, DMA_IT_HTIF1);
+	}
+
+	if ( DMA_GetITStatus(DMA2_Stream1, DMA_IT_TCIF1) != RESET) { // transfer complete interrupt
+
+		DMA_ClearITPendingBit(DMA2_Stream1, DMA_IT_TCIF1);
+	}
+
+	if ( DMA_GetITStatus(DMA2_Stream1, DMA_IT_TEIF1) != RESET) { // transfer error interrupt
+		Serial_print(USART2, "transfer error interrupt\r\n");
+		while (1) {
+			GPIO_ToggleBits(GPIOD, ORANGE_LED);
+			ms_delay(1500);
+		}
+		// DMA_ClearITPendingBit(DMA2_Stream1, DMA_IT_TEIF1);
+	}
+
 }
+
 
 #ifdef __cplusplus
 }
