@@ -42,3 +42,5 @@ FTDI | USART | STM32 pins
 GND  | GND   | GND
 TX   | RX    | PA3
 RX   | TX    | PA2
+
+![Screenshot of serial output in action](https://raw.githubusercontent.com/wiki/latsku/Camera_test/Screenshot.png)
